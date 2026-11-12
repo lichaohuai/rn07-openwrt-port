@@ -127,6 +127,10 @@
     "bytes": 479,
     "sha256": "e625d3cc0b5876633a04073adbbf15194c137bb3b461ffee88e299250a2a8232"
   },
+  "rootfs-overlay/etc/rn07-build-info": {
+    "bytes": 42,
+    "sha256": "e38dac6d547b20aee7c4731e2b06a4496b357a2c4608e3ad0ecc857cdb18c21c"
+  },
   "rootfs-overlay/lib/upgrade/platform.sh": {
     "bytes": 169,
     "sha256": "b30dfd5052bcf1bd996804e22a423019dbae37e48fa426b1aab20aa3de3a8f6d"
