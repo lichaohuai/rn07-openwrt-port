@@ -1,0 +1,49 @@
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -3006,6 +3006,37 @@
+ 
+ static const char * const probes[] = { "cmdlinepart", "ofpart", "qcomsmem", NULL };
+ 
++/* RN07 diagnostic only: stock U-Boot adds writable partition nodes to the FDT.
++ * Do not allow those nodes (or a command line parser) to expose system slots.
++ * The fixed ART location is independently verified in both saved MIBIB tables.
++ */
++static int qcom_nandc_register_mtd(struct qcom_nand_controller *nandc,
++                                 struct mtd_info *mtd)
++{
++	static const char * const no_parsers[] = { NULL };
++	static const struct mtd_partition rn07_art[] = {
++		{
++			.name = "0:ART",
++			.offset = 0x700000,
++			.size = 0x100000,
++			.mask_flags = MTD_WRITEABLE,
++		},
++	};
++
++	if (of_machine_is_compatible("xiaomi,rn07") &&
++	    of_property_read_bool(nandc->dev->of_node,
++	                          "xiaomi,art-only-diagnostic")) {
++		if (mtd->size < 0x800000)
++			return -EINVAL;
++
++		mtd->flags &= ~MTD_WRITEABLE;
++		return mtd_device_parse_register(mtd, no_parsers, NULL,
++		                                 rn07_art, ARRAY_SIZE(rn07_art));
++	}
++
++	return mtd_device_parse_register(mtd, probes, NULL, NULL, 0);
++}
++
+ static void qspi_nand_init(struct qcom_nand_controller *nandc)
+ {
+ 	u32 spi_cfg_val = 0x0;
+@@ -3090,7 +3121,7 @@
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = mtd_device_parse_register(mtd, probes, NULL, NULL, 0);
++	ret = qcom_nandc_register_mtd(nandc, mtd);
+ 	if (ret)
+ 		nand_cleanup(chip);
+ 

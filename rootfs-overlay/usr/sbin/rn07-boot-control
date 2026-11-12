@@ -1,0 +1,53 @@
+#!/bin/sh
+# Atomic stock-format environment transaction. No system-slot erase/write.
+set -eu
+[ "$(cat /tmp/sysinfo/board_name)" = xiaomi,rn07 ]
+grep -qx 'RN07 persistent slot-1 OpenWrt install v1' /etc/rn07-build-info
+[ "$(cat /sys/class/mtd/mtd0/name)" = '0:APPSBLENV' ]
+[ "$(cat /sys/class/mtd/mtd0/size)" = 524288 ]
+[ "$(cat /sys/class/mtd/mtd0/erasesize)" = 131072 ]
+[ "$(cat /sys/class/mtd/mtd1/name)" = '0:ART' ]
+[ "$(cat /sys/class/mtd/mtd2/name)" = rootfs_1 ]
+[ "$(fw_printenv -n model)" = RN07 ]
+get() { fw_printenv -n "$1"; }
+status() {
+ for n in flag_boot_rootfs flag_last_success flag_boot_success flag_ota_reboot flag_try_sys1_failed flag_try_sys2_failed; do
+  printf '%s=' "$n";get "$n"
+ done
+}
+case "${1:-status}" in
+ status) status;exit 0;;
+ accept)
+  [ "$(get flag_boot_rootfs)" = 1 ]
+  awk '$2=="/overlay" && $3=="ubifs" && $4 ~ /(^|,)rw(,|$)/ {ok=1} END {exit !ok}' /proc/mounts
+  awk '$2=="/" && $3=="overlay" {ok=1} END {exit !ok}' /proc/mounts
+  slot=1;;
+ stock) slot=0;;
+ *) echo 'Usage: rn07-boot-control status|accept|stock' >&2;exit 2;;
+esac
+# Idempotent when already at the requested normal state; otherwise one commit.
+if [ "$(get flag_boot_rootfs)" = "$slot" ] && [ "$(get flag_last_success)" = "$slot" ] &&
+   [ "$(get flag_boot_success)" = 1 ] && [ "$(get flag_ota_reboot)" = 0 ] &&
+   [ "$(get flag_try_sys1_failed)" = 0 ] && [ "$(get flag_try_sys2_failed)" = 0 ]; then
+ status;exit 0
+fi
+umask 077
+mkdir /tmp/rn07-env-transaction
+trap 'rm -f /tmp/rn07-env-transaction/changes; rmdir /tmp/rn07-env-transaction' EXIT
+cat > /tmp/rn07-env-transaction/changes <<EOF
+flag_boot_rootfs $slot
+flag_last_success $slot
+flag_boot_success 1
+flag_ota_reboot 0
+flag_try_sys1_failed 0
+flag_try_sys2_failed 0
+EOF
+fw_setenv -s /tmp/rn07-env-transaction/changes
+[ "$(get flag_boot_rootfs)" = "$slot" ]
+[ "$(get flag_last_success)" = "$slot" ]
+[ "$(get flag_boot_success)" = 1 ]
+[ "$(get flag_ota_reboot)" = 0 ]
+[ "$(get flag_try_sys1_failed)" = 0 ]
+[ "$(get flag_try_sys2_failed)" = 0 ]
+sync
+status

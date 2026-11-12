@@ -1,0 +1,13 @@
+{
+  "date": "2026-11-12",
+  "pinned_upstream_patch_applies": true,
+  "kernel_patch_series_matches_independent_historical_source": true,
+  "resolved_dts_compiles_byte_identical_to_tested_dtb": true,
+  "public_ubi_packer_recreates_corrected_historical_image_byte_for_byte": true,
+  "hardware_access_during_publication": false,
+  "secret_scan": "no known private credentials, device identifiers, host paths or key material detected in allowlisted text files",
+  "clean_full_firmware_rebuild": false,
+  "test_command": "python3 -m unittest discover -s tests -v",
+  "regression_tests_passed": 4,
+  "binary_artifacts_published": false
+}

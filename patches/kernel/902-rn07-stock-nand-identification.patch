@@ -1,0 +1,55 @@
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -1377,6 +1377,25 @@
+ 	return 0;
+ }
+ 
++/* Board-scoped: the stock table uses EF BA for the 64 MiB W25N512GW,
++ * while the generic table uses that prefix for a 128 MiB part. Do not change
++ * global identification. Unknown IDs must still fail closed on this profile.
++ */
++static bool rn07_nand_diagnostic(struct qcom_nand_controller *nandc)
++{
++	return of_machine_is_compatible("xiaomi,rn07") &&
++	       of_property_read_bool(nandc->dev->of_node,
++	                             "xiaomi,art-only-diagnostic");
++}
++
++static struct nand_flash_dev rn07_nand_ids[] = {
++	{ "W25N512GW RN07 stock geometry", { .id = { 0xef, 0xba } },
++	  2048, 64, 131072, 0, 2, 64, NAND_ECC_INFO(1, 512) },
++	{ "F35UQA512M RN07 stock geometry", { .id = { 0xcd, 0x60 } },
++	  2048, 64, 131072, 0, 2, 64, NAND_ECC_INFO(1, 512) },
++	{ NULL }
++};
++
+ /* sets up descriptors for NAND_CMD_READID */
+ static int read_id(struct qcom_nand_host *host, int column)
+ {
+@@ -1571,6 +1590,9 @@
+ 	switch (command) {
+ 	case NAND_CMD_READID:
+ 		nandc_read_buffer_sync(nandc, true);
++		if (rn07_nand_diagnostic(nandc))
++			dev_info(nandc->dev, "RN07 READ_ID raw=%08x bytes=%d\n",
++			         le32_to_cpu(nandc->reg_read_buf[0]), nandc->buf_count);
+ 		memcpy(nandc->data_buffer, nandc->reg_read_buf,
+ 		       nandc->buf_count);
+ 		break;
+@@ -3117,7 +3139,15 @@
+ 	if (nandc->props->is_serial_nand)
+ 		qspi_nand_init(nandc);
+ 
+-	ret = nand_scan(chip, 1);
++	if (rn07_nand_diagnostic(nandc)) {
++		dev_info(dev, "RN07 NAND clocks core=%lu aon=%lu iomacro=%lu\n",
++		         clk_get_rate(nandc->core_clk), clk_get_rate(nandc->aon_clk),
++		         clk_get_rate(nandc->iomacro_clk));
++		ret = nand_scan_with_ids(chip, 1, rn07_nand_ids);
++		dev_info(dev, "RN07 NAND scan result=%d\n", ret);
++	} else {
++		ret = nand_scan(chip, 1);
++	}
+ 	if (ret)
+ 		return ret;
+ 

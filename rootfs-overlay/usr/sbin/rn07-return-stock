@@ -1,0 +1,6 @@
+#!/bin/sh
+set -eu
+/usr/sbin/rn07-boot-control stock
+logger -t rn07 'Switching to preserved stock slot 0'
+sync
+reboot

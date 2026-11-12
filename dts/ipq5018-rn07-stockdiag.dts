@@ -1,0 +1,6 @@
+// SPDX-License-Identifier: (GPL-2.0+)
+/* RN07 phase3: stock 2.5 firmware must be paired with its stock mode2 layout. */
+#include "ipq5018-rn07-diag.dts"
+/ { model = "Xiaomi AX3000E (RN07) stock-radio diagnostic"; };
+&wifi0 { qcom,bdf-addr = <0x4c000000>; };
+&wifi1 { qcom,bdf-addr = <0x4cf00000>; };

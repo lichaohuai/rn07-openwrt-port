@@ -1,0 +1,17 @@
+/private/
+/build/
+/output/
+/downloads/
+__pycache__/
+*.pyc
+*.ubi
+*.itb
+*.dtb
+*.bin
+*.squashfs
+*.ipk
+*.tar*
+*.pem
+*.key
+.env*
+.DS_Store

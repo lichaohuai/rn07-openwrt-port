@@ -1,0 +1,40 @@
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -1384,8 +1384,8 @@
+ static bool rn07_nand_diagnostic(struct qcom_nand_controller *nandc)
+ {
+ 	return of_machine_is_compatible("xiaomi,rn07") &&
+-	       of_property_read_bool(nandc->dev->of_node,
+-	                             "xiaomi,art-only-diagnostic");
++	       (of_property_read_bool(nandc->dev->of_node, "xiaomi,art-only-diagnostic") ||
++	        of_property_read_bool(nandc->dev->of_node, "xiaomi,slot1-install"));
+ }
+ 
+ static struct nand_flash_dev rn07_nand_ids[] = {
+@@ -3045,6 +3045,26 @@
+ 		},
+ 	};
+ 
++
++	/* RN07 slot-1 install: never expose stock slot, bootloader, or stock overlay.
++	 * Ignore U-Boot partition injection. Geometry comes from both saved MIBIBs.
++	 * The environment is needed for stock-compatible boot acknowledgement.
++	 */
++	if (of_machine_is_compatible("xiaomi,rn07") &&
++	    of_property_read_bool(nandc->dev->of_node, "xiaomi,slot1-install")) {
++		static const struct mtd_partition rn07_install[] = {
++			{ .name = "0:APPSBLENV", .offset = 0x480000, .size = 0x80000 },
++			{ .name = "0:ART", .offset = 0x700000, .size = 0x100000,
++			  .mask_flags = MTD_WRITEABLE },
++			{ .name = "rootfs_1", .offset = 0x2280000, .size = 0x1900000 },
++		};
++		if (mtd->size != 0x4000000 || mtd->erasesize != 0x20000 ||
++		    mtd->writesize != 0x800)
++			return -EINVAL;
++		return mtd_device_parse_register(mtd, no_parsers, NULL,
++		                                 rn07_install, ARRAY_SIZE(rn07_install));
++	}
++
+ 	if (of_machine_is_compatible("xiaomi,rn07") &&
+ 	    of_property_read_bool(nandc->dev->of_node,
+ 	                          "xiaomi,art-only-diagnostic")) {

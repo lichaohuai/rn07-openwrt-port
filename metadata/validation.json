@@ -1,0 +1,18 @@
+{
+  "date": "2026-11-12",
+  "devices_tested": 1,
+  "stock_firmware": "1.0.24",
+  "normal_reboot_and_persistence": "passed once",
+  "dual_band": "2.4 GHz and 5 GHz, HE20, WPA2",
+  "payload_validation": "4 MiB upload + 4 MiB download per band, SHA256 matched",
+  "luci": "login and overview, network interfaces, wireless, firewall rendered",
+  "lan_dhcp_dns": "passed",
+  "stock_return": "slot0 selected, CRC and environment readback verified, original firmware identity and web confirmed",
+  "wan_nat_internet": "not tested",
+  "all_physical_ports": "not tested",
+  "wide_channels": "not tested",
+  "sustained_load": "not tested",
+  "shutdown_stability": "not established; historical stalls and later lost-connectivity episode required power cycling",
+  "public_recipe_clean_full_rebuild": "not yet performed",
+  "binary_firmware_release": false
+}

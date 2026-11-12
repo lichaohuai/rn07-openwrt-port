@@ -1,0 +1,156 @@
+diff --git a/target/linux/ipq50xx/base-files/etc/board.d/02_network b/target/linux/ipq50xx/base-files/etc/board.d/02_network
+index c30bac0..d5e3672 100755
+--- a/target/linux/ipq50xx/base-files/etc/board.d/02_network
++++ b/target/linux/ipq50xx/base-files/etc/board.d/02_network
+@@ -12,6 +12,12 @@ ipq50xx_setup_interfaces()
+ 				"1:lan:1" "2:lan:2" "3:lan:3" \
+ 				"4:wan"
+ 			;;
++		xiaomi,rn07)
++			# RN07 stock logical port 5 maps to hardware MAC8.
++			ucidef_add_switch "switch0" \
++				"8u@eth1" "4u@eth0" \
++				"2:lan:1" "1:lan:2" "0:lan:3" "3:wan"
++			;;
+ 		xiaomi,cr881x)
+ 			ucidef_add_switch "switch0" \
+ 				"8u@eth1" "4u@eth0" \
+diff --git a/target/linux/ipq50xx/base-files/etc/hotplug.d/firmware/11-ath11k-caldata b/target/linux/ipq50xx/base-files/etc/hotplug.d/firmware/11-ath11k-caldata
+index 0b2f586..e68f3e5 100644
+--- a/target/linux/ipq50xx/base-files/etc/hotplug.d/firmware/11-ath11k-caldata
++++ b/target/linux/ipq50xx/base-files/etc/hotplug.d/firmware/11-ath11k-caldata
+@@ -11,7 +11,8 @@ case "$FIRMWARE" in
+ 		case "$board" in
+ 			cmcc,rax3000q|\
+ 			redmi,ax3000|\
+-			xiaomi,cr881x)
++			xiaomi,cr881x|\
++			xiaomi,rn07)
+ 				caldata_extract "0:ART" 0x1000 0x20000
+ 				;;
+ 		esac
+@@ -20,7 +21,8 @@ case "$FIRMWARE" in
+ 		case "$board" in
+ 			cmcc,rax3000q|\
+ 			redmi,ax3000|\
+-			xiaomi,cr881x)
++			xiaomi,cr881x|\
++			xiaomi,rn07)
+ 				caldata_extract "0:ART" 0x26800 0x20000
+ 				;;
+ 		esac
+diff --git a/target/linux/ipq50xx/base-files/lib/upgrade/platform.sh b/target/linux/ipq50xx/base-files/lib/upgrade/platform.sh
+index 19ceb64..4018510 100644
+--- a/target/linux/ipq50xx/base-files/lib/upgrade/platform.sh
++++ b/target/linux/ipq50xx/base-files/lib/upgrade/platform.sh
+@@ -6,6 +6,10 @@ RAMFS_COPY_DATA='/etc/fw_env.config /var/lock/fw_printenv.lock'
+ platform_check_image() {
+ 	local board=$(board_name)
+ 	case $board in
++		xiaomi,rn07)
++			v "RN07 RAM bring-up: persistent upgrade is disabled."
++			return 1
++			;;
+ 		redmi,ax3000|\
+ 		xiaomi,cr881x)
+ 			mi_dualboot_check_image "$1"
+@@ -21,6 +25,10 @@ platform_check_image() {
+ platform_do_upgrade() {
+ 	local board=$(board_name)
+ 	case $board in
++		xiaomi,rn07)
++			v "RN07 RAM bring-up: persistent upgrade is disabled."
++			return 1
++			;;
+ 		redmi,ax3000|\
+ 		xiaomi,cr881x)
+ 			mi_dualboot_do_upgrade "$1"
+diff --git a/target/linux/ipq50xx/image/Makefile b/target/linux/ipq50xx/image/Makefile
+index 701a62d..bec58cf 100644
+--- a/target/linux/ipq50xx/image/Makefile
++++ b/target/linux/ipq50xx/image/Makefile
+@@ -88,4 +88,41 @@ define Device/xiaomi_cr881x
+ endef
+ TARGET_DEVICES += xiaomi_cr881x
+ 
++# RN07 first-stage candidate: ARM initramfs only; no persistent image.
++ifeq ($(SUBTARGET),arm)
++define Device/xiaomi_rn07
++  $(call Device/FitImage)
++  SOC := ipq5018
++  DEVICE_VENDOR := Xiaomi
++  DEVICE_MODEL := AX3000E
++  DEVICE_VARIANT := RN07 experimental RAM bring-up
++  DEVICE_DTS_CONFIG := config@mp03.3
++  IMAGES :=
++  DEVICE_PACKAGES := -uboot-envtools -kmod-ath11k -kmod-ath11k-ahb -kmod-ath11k-pci -wpad-basic-wolfssl
++endef
++TARGET_DEVICES += xiaomi_rn07
++
++# Separate diagnostic profile preserves the first tested, no-radio profile.
++define Device/xiaomi_rn07_diag
++  $(call Device/FitImage)
++  SOC := ipq5018
++  DEVICE_VENDOR := Xiaomi
++  DEVICE_MODEL := AX3000E
++  DEVICE_VARIANT := RN07 wireless diagnostic, read-only ART
++  DEVICE_DTS := ipq5018-rn07-diag
++  DEVICE_DTS_CONFIG := config@mp03.3
++  IMAGES :=
++  DEVICE_PACKAGES := -uboot-envtools -kmod-ath11k-pci -wpad-basic-wolfssl kmod-ath11k kmod-ath11k-ahb wpad-basic-mbedtls
++endef
++TARGET_DEVICES += xiaomi_rn07_diag
++
++# Phase3 stock-radio experiment; preserve both earlier candidate profiles.
++define Device/xiaomi_rn07_stockdiag
++  $(call Device/xiaomi_rn07_diag)
++  DEVICE_VARIANT := RN07 stock-radio diagnostic, read-only ART
++  DEVICE_DTS := ipq5018-rn07-stockdiag
++endef
++TARGET_DEVICES += xiaomi_rn07_stockdiag
++endif
++
+ $(eval $(call BuildImage))
+diff --git a/target/linux/ipq50xx/patches/703-arm64-dts-qcom-ipq5018-Add-ess-node.patch b/target/linux/ipq50xx/patches/703-arm64-dts-qcom-ipq5018-Add-ess-node.patch
+index 987da71..5080adf 100644
+--- a/target/linux/ipq50xx/patches/703-arm64-dts-qcom-ipq5018-Add-ess-node.patch
++++ b/target/linux/ipq50xx/patches/703-arm64-dts-qcom-ipq5018-Add-ess-node.patch
+@@ -13,7 +13,7 @@ index 71da4ba4f6bb..0bc0f271b251 100644
+ --- a/arch/arm64/boot/dts/qcom/ipq5018.dtsi
+ +++ b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
+ @@ -271,5 +271,80 @@
+- 			clocks-name = "gcc_mdio_ahb_clk";
++ 			clock-names = "gcc_mdio_ahb_clk";
+  			status = "disabled";
+  		};
+ +
+diff --git a/target/linux/ipq50xx/patches/822-arm64-dts-qcom-ipq5018-Add-smem-node.patch b/target/linux/ipq50xx/patches/822-arm64-dts-qcom-ipq5018-Add-smem-node.patch
+index 37d680d..2ad96ea 100644
+--- a/target/linux/ipq50xx/patches/822-arm64-dts-qcom-ipq5018-Add-smem-node.patch
++++ b/target/linux/ipq50xx/patches/822-arm64-dts-qcom-ipq5018-Add-smem-node.patch
+@@ -13,8 +13,8 @@ index 5389f90fb46c..6d0746e0486c 100644
+ --- a/arch/arm64/boot/dts/qcom/ipq5018.dtsi
+ +++ b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
+ @@ -108,12 +108,29 @@
+- 			no-map;
+- 		};
++ 		#size-cells = <2>;
++ 		ranges;
+  
+ +		smem_region:smem@4ab00000 {
+ +			no-map;
+diff --git a/target/linux/ipq50xx/patches/823-arm64-dts-qcom-ipq5018-Add-Wifi-node.patch b/target/linux/ipq50xx/patches/823-arm64-dts-qcom-ipq5018-Add-Wifi-node.patch
+index 9986da7..33f7252 100644
+--- a/target/linux/ipq50xx/patches/823-arm64-dts-qcom-ipq5018-Add-Wifi-node.patch
++++ b/target/linux/ipq50xx/patches/823-arm64-dts-qcom-ipq5018-Add-Wifi-node.patch
+@@ -13,8 +13,8 @@ index 6d0746e0486c..1ef5d33d2234 100644
+ --- a/arch/arm64/boot/dts/qcom/ipq5018.dtsi
+ +++ b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
+ @@ -506,5 +506,243 @@
+- 			qcom,pvxlan-enabled;
+- 			qcom,udp-st-enabled;
++ 					      "gephy_misc_rst";
++ 			};
+  		};
+ +
+ +		q6v5_wcss: remoteproc@cd00000 {

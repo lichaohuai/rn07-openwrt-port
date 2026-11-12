@@ -1,0 +1,8 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+/* Experimental persistent slot-1 selection; forced kernel cmdline is required. */
+#include "ipq5018-rn07-stockdiag.dts"
+/ { model = "Xiaomi AX3000E (RN07) OpenWrt"; };
+&nand {
+    /delete-property/ xiaomi,art-only-diagnostic;
+    xiaomi,slot1-install;
+};

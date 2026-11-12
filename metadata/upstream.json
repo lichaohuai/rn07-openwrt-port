@@ -1,0 +1,31 @@
+{
+  "upstream_repo": "https://github.com/hzyitc/openwrt-redmi-ax3000",
+  "commit": "6faaa1504fd5c5ca34f61b22ab07851907604c59",
+  "release": "ci-ipq50xx-mainline-kernel-5.15-openwrt-23.05-20240724-153345-UTC",
+  "openwrt": "23.05.3",
+  "linux": "5.15.150",
+  "architecture": "arm_cortex-a7_neon-vfpv4",
+  "community_request": "https://github.com/hzyitc/openwrt-redmi-ax3000/issues/158",
+  "assets": [
+    {
+      "name": "openwrt-toolchain-ipq50xx-arm_gcc-12.3.0_musl_eabi.Linux-x86_64.tar.xz",
+      "sha256": "f36b8081a710e8cf6af6155f64d647a005066c8205128eeff585762577f08b41",
+      "redistributed": false
+    },
+    {
+      "name": "openwrt-imagebuilder-ipq50xx-arm.Linux-x86_64.tar.xz",
+      "sha256": "c2b18bdf7cf45e6f6d47c9be40d0bbec5edad6a5bc4663c1131aadec72456575",
+      "redistributed": false
+    },
+    {
+      "name": "linux-5.15.150.tar.xz",
+      "sha256": "ee05592b458e7fcdc515b43605883a10cc2f65f2e2b58d60af8a72b93467e4d4",
+      "redistributed": false
+    },
+    {
+      "name": "backports-6.1.24.tar.xz",
+      "sha256": "5d39aca7e34c33cb9b3e366117b2e86841b7bdd37933679d6b1e61be6b150648",
+      "redistributed": false
+    }
+  ]
+}

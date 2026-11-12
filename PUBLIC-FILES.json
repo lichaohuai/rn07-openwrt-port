@@ -1,0 +1,162 @@
+{
+  ".github/workflows/offline-checks.yml": {
+    "bytes": 549,
+    "sha256": "a64dee19d1abfd711c11816b09cbe57df314ca5c065c3bf33fb9be8abb56dce3"
+  },
+  ".gitignore": {
+    "bytes": 134,
+    "sha256": "76d2fa529f75bfd65b9dae928381851fde934a1d59f0e1d42c095f731894c0ce"
+  },
+  "CONTRIBUTING.md": {
+    "bytes": 839,
+    "sha256": "9e82a958bada2348b6a0ddf70764942c47f1fda27ccfc414b6e131250db782f3"
+  },
+  "LICENSE": {
+    "bytes": 18644,
+    "sha256": "4a4d5c03ac503d809243f9d8de5517601e345990a85b6a59666c3f1caca02474"
+  },
+  "NOTICE.md": {
+    "bytes": 1466,
+    "sha256": "25f73834e31eba000d99961924b483db39cc486bce04920b8ba5566f1bd54e95"
+  },
+  "README.md": {
+    "bytes": 3403,
+    "sha256": "68ad7c421f418bed71e871000f15364e7560e4825c2318957a01d19cd916285c"
+  },
+  "configs/backports.config": {
+    "bytes": 30073,
+    "sha256": "0dc48abb91ac65d8bd5ff69b9463e80b607435ce093ef07725d3e999e3a3a9c2"
+  },
+  "configs/kernel-5.15.150.config": {
+    "bytes": 126036,
+    "sha256": "3dcf24605718695ff1f1f602bfc2050f92f1a943d36dbd47983ef64fea88ffde"
+  },
+  "docs/BUILDING.md": {
+    "bytes": 4303,
+    "sha256": "239671c22acae4c7460591f060818e418988c5c7b8a161cff39d371e3842781e"
+  },
+  "docs/HARDWARE.md": {
+    "bytes": 1868,
+    "sha256": "b6b4c08b6b13faa9083c5595527fa8ccdf06686380bfa46e6b4a646179c03128"
+  },
+  "docs/INSTALLATION.md": {
+    "bytes": 2597,
+    "sha256": "ac51ca2ebe03054dc00209bea3aa4c2b94b5a127d782a329be12328d611d2ac9"
+  },
+  "docs/RECOVERY.md": {
+    "bytes": 1421,
+    "sha256": "e30ebd8cfc3d57330118c9a8e4277ed95121e1701b43ed3482cbf11b116e9b7f"
+  },
+  "docs/VALIDATION.md": {
+    "bytes": 2849,
+    "sha256": "0dc16567bdc0906baff65bb7205badeeb50f82bca4b789a0a6f7d5da743faefe"
+  },
+  "dts/ipq5018-rn07-diag.dts": {
+    "bytes": 3564,
+    "sha256": "88cfd3a6a54e64efe953b6ff60f99a5cd2ded875a043349efeed087433726a23"
+  },
+  "dts/ipq5018-rn07-install.dts": {
+    "bytes": 301,
+    "sha256": "32fb93c6792bfa6a7288dfd0508b7954d3ee7130871e323ca3eceee22938ae11"
+  },
+  "dts/ipq5018-rn07-stockdiag.dts": {
+    "bytes": 301,
+    "sha256": "e43f78743c2a11a2c5378a2c1059144609fad4ed11a53eec7a0014534121a8a4"
+  },
+  "dts/ipq5018-rn07.dts": {
+    "bytes": 7549,
+    "sha256": "a3e50dd2e21518e3a6a588b425930f1a4c64e74ed819b3e78b1f292e1511eb19"
+  },
+  "dts/rn07-install-resolved.dts": {
+    "bytes": 22801,
+    "sha256": "c74f863dd181b815b92b5532f1a226872b91bf4ac8dc5bfbe0ee3742993964ec"
+  },
+  "metadata/publication-checks.json": {
+    "bytes": 631,
+    "sha256": "f82bf6ac439a7d5ce608b864f06d3a5164758fdf79b80da19494f3d48da1220e"
+  },
+  "metadata/upstream.json": {
+    "bytes": 1147,
+    "sha256": "150e2889277fdeb3651cf3cdee76da9334aaccf5f23206b807ec3c384115be8e"
+  },
+  "metadata/validation.json": {
+    "bytes": 847,
+    "sha256": "9676ddc93973cafb8cc3492065b46ee5838012e5b11d66c5289d9435e61614bb"
+  },
+  "patches/kernel/901-rn07-diagnostic-readonly-art.patch": {
+    "bytes": 1524,
+    "sha256": "7ed4ab75568d96c333b8de1e83edae9f0add4d63b0265dc80a8d3ca5ccd40968"
+  },
+  "patches/kernel/902-rn07-stock-nand-identification.patch": {
+    "bytes": 1898,
+    "sha256": "23515d108112d7fb6811ce4cbf799458c8abbee31e0978e0e47dca52c67f4884"
+  },
+  "patches/kernel/903-rn07-q6-diagnostic-only.patch": {
+    "bytes": 4313,
+    "sha256": "68c839d69945294d9ecfe0954a0c54844c7846b1935664b00c350a2215549aa6"
+  },
+  "patches/kernel/904-rn07-bounded-slot1-install.patch": {
+    "bytes": 1675,
+    "sha256": "091bbe02c4d17a9a5f25eca33c36a267559303ac7b02b69fe69f44072fb000d1"
+  },
+  "patches/kernel/series": {
+    "bytes": 151,
+    "sha256": "4f6c45e7c901a5e57cc997b56effd60e0fef8a481966976b6d436eda090b560f"
+  },
+  "patches/openwrt/0001-rn07-platform.patch": {
+    "bytes": 5856,
+    "sha256": "87c002a1ccb23d84c7aa22a28f1f80d693ee1bf8e5f9352e6ed2fb4995ff3aee"
+  },
+  "reference/qcom_nandc.install.c": {
+    "bytes": 97047,
+    "sha256": "aa39b911fd918c45e14536279af546ba5550feb2903ad23b3104711e7cd72770"
+  },
+  "reference/qcom_q6v5_mpd.diagnostic.c": {
+    "bytes": 18651,
+    "sha256": "e7f4dd8a563ea295533ec11020d1f288f9606e0f6f5ade10cbb294a4bb97e9e5"
+  },
+  "rootfs-overlay/etc/config/ubootenv": {
+    "bytes": 132,
+    "sha256": "28e77e38a9f981905c6945d08e4c376a7c7f8a9c1cdbccb41be1b5bc4b5907bc"
+  },
+  "rootfs-overlay/etc/fw_env.config": {
+    "bytes": 34,
+    "sha256": "9f976f5646d6359910e3b682f26f1e4f2973e35f1a6f6e81cdb2de642d2f3724"
+  },
+  "rootfs-overlay/etc/init.d/rn07_boot": {
+    "bytes": 479,
+    "sha256": "e625d3cc0b5876633a04073adbbf15194c137bb3b461ffee88e299250a2a8232"
+  },
+  "rootfs-overlay/lib/upgrade/platform.sh": {
+    "bytes": 169,
+    "sha256": "b30dfd5052bcf1bd996804e22a423019dbae37e48fa426b1aab20aa3de3a8f6d"
+  },
+  "rootfs-overlay/usr/sbin/rn07-boot-control": {
+    "bytes": 2012,
+    "sha256": "0838ddaf1ebb7e8a1c35a388bf03acfeffc8584fb28882769311e8b8c4a4d57d"
+  },
+  "rootfs-overlay/usr/sbin/rn07-return-stock": {
+    "bytes": 117,
+    "sha256": "e87ecffb2ffcff7c3d6732c03968a38e370d710b92a1944efa93d5be17a3db48"
+  },
+  "tests/test_layout.py": {
+    "bytes": 1131,
+    "sha256": "c3638b1cbced10c1c6a8e5def8c03ea1dd1e9b6a8f13be49e15b7dfd488b50a9"
+  },
+  "tools/apply_openwrt.py": {
+    "bytes": 1658,
+    "sha256": "2e79d829fb3d3f10eb8f3424b7c0a51640adb3323c533cd93449b0170398f4d1"
+  },
+  "tools/pack_ubi.py": {
+    "bytes": 2102,
+    "sha256": "ef744283bc75bfd5c57a63c0dabd242ce4cb4d2947f81b9f13cee49fb2359a4e"
+  },
+  "tools/ubi_layout.py": {
+    "bytes": 4579,
+    "sha256": "1d76ac9cd169f511a52268480900318e39ca3bfb10b30095b876257315040620"
+  },
+  "tools/verify_ubi.py": {
+    "bytes": 493,
+    "sha256": "0d1cd2308b8b1a3b1cb57dc117de788c77b123b40abeb66218f6f5e882ce6b00"
+  }
+}
